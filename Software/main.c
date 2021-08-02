@@ -20,6 +20,7 @@
 #include "D:\development\my_libraries\veres_crc8.h"
 #include "D:\development\my_libraries\veres_err_list.h"
 #include "D:\development\my_libraries\veres_shpindle_laser.h"
+#include "lib\veres_shiftRegister.h"
 
 
 
