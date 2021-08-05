@@ -21,7 +21,7 @@
 #include "D:\development\my_libraries\veres_err_list.h"
 #include "D:\development\my_libraries\veres_shpindle_laser.h"
 #include "lib\veres_shiftRegister.h"
-
+#include "lib\veres_stepperDriver.h"
 
 
 #define	DELAY_OF_DATA			10		// time of delay before next data packet

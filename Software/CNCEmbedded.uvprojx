@@ -409,11 +409,6 @@
           <GroupName>MainCode</GroupName>
           <Files>
             <File>
-              <FileName>veres_shiftRegister.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\lib\veres_shiftRegister.h</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
