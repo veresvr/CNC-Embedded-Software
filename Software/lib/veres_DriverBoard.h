@@ -1,5 +1,6 @@
 /*			discription:
-		 		library configure and driving a shift register SNx4HC595.
+		 		library configure and driving a shift register SNx4HC595 and stepper motor drivers LV8729.
+				
 				datasheet: https://www.ti.com/lit/ds/symlink/sn74hc595.pdf?ts=1627877923531&ref_url=https%253A%252F%252Fwww.google.com%252F
 				default state of the chip:
 					output enable (!OE pin13) - hight (output disable, all pins are in Hi-z)
@@ -19,8 +20,41 @@
 #include "stdint.h"
 #include "stm32f10x.h"
 
-FunctionalState state;
+#define STEPS_PER_REV_XY	200
+#define STEPS_PER_REV_Z		200
+#define PULLEY_TEETH_XY		12
+#define PULLEY_TEETH_Z		12
+#define BELT_PITCH_XY_MM	2
+#define BELT_PITCH_Z_MM		2
 
+#define SUBDIVISION_1			1	
+#define SUBDIVISION_2			2
+#define SUBDIVISION_4			4
+#define SUBDIVISION_8			8
+#define SUBDIVISION_16		16
+#define SUBDIVISION_32		32
+#define SUBDIVISION_64		64
+#define SUBDIVISION_128		128
+
+#define LENGTH_PER_ONE_STEP_XY(SUBDIVISION)	((PULLEY_TEETH_XY*BELT_PITCH_XY_MM)/STEPS_PER_REV_XY)/(SUBDIVISION)
+
+const double 	DistanceXYPerDiv1 = 0.12,
+							DistanceXYPerDiv2 = 0.06,
+							DistanceXYPerDiv4 = 0.03,
+							DistanceXYPerDiv8 = 0.015,
+							DistanceXYPerDiv16 = 0.0075,
+							DistanceXYPerDiv32 = 0.00375,
+							DistanceXYPerDiv64 = 0.001875,
+							DistanceXYPerDiv128 = 0.0009375;
+
+const double ActualDistance = DistanceXYPerDiv1;
+
+float oldDataX = 0,
+			oldDataY = 0,
+			oldDataZ = 0;
+
+FunctionalState state;
+/*
 typedef struct 
 	{ uint8_t FULL_STEP = 0;								
 		uint8_t MICRO_1_2 = 0h001;
@@ -31,11 +65,52 @@ typedef struct
 						MICRO_1_64,
 						MICRO_1_128,
 						NO_CHANGES = !FULL_STEP;
-} Subdivisions;
+} Subdivisions; */
  
+ 
+void moveXY(float newDataX, float newDataY);
+void moveZ(float newDataZ);
+
 void REGISTER_Init(void);
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ);
-void REGISTER_state(FunctionalState state);								
+void REGISTER_state(FunctionalState state);		
+
+
+void moveXY(float newDataX, float newDataY)
+{	
+	float deltaX = newDataX - oldDataX;
+	float deltaY = newDataY - oldDataY;
+	
+	uint32_t 	stepsX, 
+						stepsY, 
+						deltaSteps,
+						sideSteps,
+						middleSteps;
+		
+//LENGHT CONVERTING TO STEPS
+//	stepsX = uint32_t (deltaX / ActualDistance);
+//	stepsY = uint32_t (deltaY / ActualDistance);
+	
+if (stepsX != stepsY)
+	{	if(stepsX > stepsY){
+		middleSteps = stepsX / (stepsY - 1);
+	} else {
+		middleSteps = stepsY / (stepsX - 1);
+	}
+	sideSteps = middleSteps >> 2;							// i need divide it by 2
+}
+	
+
+	oldDataX = newDataX;
+	oldDataY = newDataY;
+}
+
+void moveZ(float newDataZ)
+{
+
+	
+	 
+}
 
 void REGISTER_Init(void)
 {	
@@ -70,6 +145,7 @@ void REGISTER_state(FunctionalState state)
 		else {};
 	
 }		
+
 
 
 /*		Example of use this library.
