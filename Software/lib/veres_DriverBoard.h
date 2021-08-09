@@ -6,6 +6,11 @@
 					output enable (!OE pin13) - hight (output disable, all pins are in Hi-z)
 					direct overriding clear (!SRCLR) - hight (output pins has its own states)
 					typedef enum {DISABLE = 0, ENABLE = !DISABLE} Subdivisions;
+					
+					
+				Max frequency for STEP pin = 50kHz.
+				
+				This library uses Bresenham line algorithm: Full information: https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 				
 				was create:			08.02.2021
 				update:					08.02.2021
@@ -19,6 +24,8 @@
 */
 #include "stdint.h"
 #include "stm32f10x.h"
+
+#define NO_DATA						0
 
 #define STEPS_PER_REV_XY	200
 #define STEPS_PER_REV_Z		200
@@ -71,7 +78,7 @@ typedef struct
 void moveXY(float newDataX, float newDataY);
 void moveZ(float newDataZ);
 
-void REGISTER_Init(void);
+void DriverBoard_Init(void);
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ);
 void REGISTER_state(FunctionalState state);		
 
@@ -91,14 +98,34 @@ void moveXY(float newDataX, float newDataY)
 //	stepsX = uint32_t (deltaX / ActualDistance);
 //	stepsY = uint32_t (deltaY / ActualDistance);
 	
-if (stepsX != stepsY)
-	{	if(stepsX > stepsY){
+	if ( (newDataX == NO_DATA) && (newDataY != NO_DATA) ) {
+		// move only along Y
+	// return success
+	}
+
+	if ( (newDataY == NO_DATA) && (newDataX != NO_DATA) ) {
+		// move only along X
+	// return success
+	}
+	
+	if ( (newDataY == NO_DATA) && (newDataX == NO_DATA) ) {
+		// nothing to move
+	// return success
+	}
+	
+	if ( newDataY == newDataX ) {
+		// move simetrically along X and Y
+	// return success
+	}
+
+// here the algorithm	
+	if(stepsX > stepsY){
 		middleSteps = stepsX / (stepsY - 1);
 	} else {
 		middleSteps = stepsY / (stepsX - 1);
 	}
 	sideSteps = middleSteps >> 2;							// i need divide it by 2
-}
+
 	
 
 	oldDataX = newDataX;
@@ -112,7 +139,7 @@ void moveZ(float newDataZ)
 	 
 }
 
-void REGISTER_Init(void)
+void DriverBoard_Init(void)
 {	
 	// clock 
   RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;					// Timer 2 clock enable 
@@ -150,24 +177,7 @@ void REGISTER_state(FunctionalState state)
 
 /*		Example of use this library.
 
-// in main code must be handler for interrupt:
 
-uint8_t	status = 0;									// global variable
-
-void TIM2_IRQHandler(void)
-{
-	TIM2->SR &= ~TIM_SR_UIF;					// clear flag of event
-	TIM2->SR &= ~TIM_SR_TIF;					
-	
-	// next code is example of work
-	if (status == 0) {								// if LED off - turn on
-			GPIOA->BSRR =GPIO_BSRR_BS3;
-			status = 1;
-	} else {
-			GPIOA->BSRR =GPIO_BSRR_BR3;
-			status = 0;
-	}
-}
 
 
 */
