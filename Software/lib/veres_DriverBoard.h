@@ -10,7 +10,8 @@
 					
 				Max frequency for STEP pin = 50kHz.
 				
-				This library uses Bresenham line algorithm: Full information: https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+				This library uses Bresenham line algorithm: the code was taken from here http://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#C
+				and modified for my needs.
 				
 				was create:			08.02.2021
 				update:					08.02.2021
@@ -176,6 +177,28 @@ void REGISTER_state(FunctionalState state)
 
 
 /*		Example of use this library.
+
+
+
+void line(int x0, int x1, int y0, int y1) {
+
+  int   dx = abs(x1-x0),
+        sx = x0<x1 ? 1 : -1;
+
+  int   dy = abs(y1-y0),
+        sy = y0<y1 ? 1 : -1;
+
+  int   err = (dx>dy ? dx : -dy)/2,
+        e2 = 0;
+
+  for(;;){
+    printf("%d\t%d\t%d\t\n",x0,y0,e2);
+    if (x0==x1 && y0==y1) break;
+    e2 = err;
+    if (e2 >-dx) { err -= dy; x0 += sx; }
+    if (e2 < dy) { err += dx; y0 += sy; }
+  }
+}
 
 
 
