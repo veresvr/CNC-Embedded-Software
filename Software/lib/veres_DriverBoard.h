@@ -20,6 +20,7 @@
 */
 #include "stdint.h"
 #include "stm32f10x.h"
+#include "D:\development\my_libraries\veres_err_list.h"
 
 #define NO_DATA						0
 
@@ -72,18 +73,22 @@ typedef struct
 } Subdivisions; */
  
  
-void moveXY(float newDataX, float newDataY);
-void moveZ(float newDataZ);
+uint32_t moveLineXY(float newDataX, float newDataY);
+void moveLineZ(float newDataZ);
 
 void DriverBoard_Init(void);
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ);
 void REGISTER_state(FunctionalState state);		
+int abs(int number);
 
-
-void moveXY(float newDataX, float newDataY)
+uint32_t moveLineXY(float newDataX, float newDataY)
 {	
-	float deltaX = newDataX - oldDataX;
-	float deltaY = newDataY - oldDataY;
+	float lenghtOfX = newDataX - oldDataX;				// oldData = 0
+	float lenghtOfY = newDataY - oldDataY;
+	
+	int32_t numberOfStepsX = lenghtOfX / ActualResolution,
+					numberOfStepsY = lenghtOfY / ActualResolution;	
+	
 	
 	uint32_t 	stepsX, 
 						stepsY, 
@@ -97,62 +102,56 @@ void moveXY(float newDataX, float newDataY)
 	
 	if ( (newDataX == NO_DATA) && (newDataY != NO_DATA) ) {
 		// move only along Y
-	// return success
+	return OK;
 	}
 
 	if ( (newDataY == NO_DATA) && (newDataX != NO_DATA) ) {
 		// move only along X
-	// return success
+	return OK;
 	}
 	
 	if ( (newDataY == NO_DATA) && (newDataX == NO_DATA) ) {
 		// nothing to move
-	// return success
+	return OK;
 	}
 	
 	if ( newDataY == newDataX ) {
 		// move simetrically along X and Y
-	// return success
+	return OK;
 	}
 
 // here the algorithm	
 	if ( newDataY != newDataX ){
 		
-	int32_t numberOfStepsX = newDataX / ActualResolution;
-	int32_t numberOfStepsY = newDataY / ActualResolution;
+	int32_t numberOfStepsX = newDataX / ActualResolution,
+					numberOfStepsY = newDataY / ActualResolution;
 		
-  int32_t   dx = abs(deltaX),
-						sx = oldDataX < newDataX ? 1 : -1;
+  int32_t	dx = abs(numberOfStepsX),
+					sx = 0 < newDataX ? 1 : -1;
 
-  int32_t   dy = abs(deltaY),
-						sy = oldDataY < newDataY ? 1 : -1;
+  int32_t	dy = abs(numberOfStepsY),
+					sy = 0 < newDataY ? 1 : -1;
 
-  int   err = (dx>dy ? dx : -dy) >> 1,
-        e2 = 0;
+  int32_t	err = (dx>dy ? dx : -dy) >> 1,
+					e2 = 0;
 
+	int32_t x0 = 0,
+					y0 = 0;
+	
   for(;;){
-    if (x0==x1 && y0==y1) break;
+    if ( (x0 == numberOfStepsX) && (y0 == numberOfStepsY) ) break;
     e2 = err;
     if (e2 >-dx) { err -= dy; x0 += sx; }
     if (e2 < dy) { err += dx; y0 += sy; }
-  }
+		}
 	
 	oldDataX = newDataX;
 	oldDataY = newDataY;	
-	
-}
-	
-	
-	
-	
-	
-
-	
-
-
+	return OK;	
+	}
 }
 
-void moveZ(float newDataZ)
+void moveLineZ(float newDataZ)
 {
 
 	
@@ -193,7 +192,9 @@ void REGISTER_state(FunctionalState state)
 	
 }		
 
-
+int abs(int number) {
+  return number >= 0 ? number : -number;
+}
 
 /*		Example of use this library.
 

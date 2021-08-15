@@ -9,3 +9,4 @@
 .\main.o: D:\development\my_libraries\veres_err_list.h
 .\main.o: D:\development\my_libraries\veres_shpindle_laser.h
 .\main.o: lib\veres_DriverBoard.h
+.\main.o: D:\development\my_libraries\veres_err_list.h
