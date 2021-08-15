@@ -13,11 +13,6 @@
 				This library uses Bresenham line algorithm: the code was taken from here http://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#C
 				and modified for my needs.
 				
-				was create:			08.02.2021
-				update:					08.02.2021
-				status: 				not WORK
-
-				need make:			
 
 				other notes:       
 				clock must be 8 MHz.				
@@ -55,8 +50,9 @@ const double 	DistanceXYPerDiv1 = 0.12,
 							DistanceXYPerDiv64 = 0.001875,
 							DistanceXYPerDiv128 = 0.0009375;
 
-const double ActualDistance = DistanceXYPerDiv1;
+const double ActualResolution = DistanceXYPerDiv1;
 
+// location where we are
 float oldDataX = 0,
 			oldDataY = 0,
 			oldDataZ = 0;
@@ -120,17 +116,40 @@ void moveXY(float newDataX, float newDataY)
 	}
 
 // here the algorithm	
-	if(stepsX > stepsY){
-		middleSteps = stepsX / (stepsY - 1);
-	} else {
-		middleSteps = stepsY / (stepsX - 1);
-	}
-	sideSteps = middleSteps >> 2;							// i need divide it by 2
+	if ( newDataY != newDataX ){
+		
+	int32_t numberOfStepsX = newDataX / ActualResolution;
+	int32_t numberOfStepsY = newDataY / ActualResolution;
+		
+  int32_t   dx = abs(deltaX),
+						sx = oldDataX < newDataX ? 1 : -1;
+
+  int32_t   dy = abs(deltaY),
+						sy = oldDataY < newDataY ? 1 : -1;
+
+  int   err = (dx>dy ? dx : -dy) >> 1,
+        e2 = 0;
+
+  for(;;){
+    if (x0==x1 && y0==y1) break;
+    e2 = err;
+    if (e2 >-dx) { err -= dy; x0 += sx; }
+    if (e2 < dy) { err += dx; y0 += sy; }
+  }
+	
+	oldDataX = newDataX;
+	oldDataY = newDataY;	
+	
+}
+	
+	
+	
+	
+	
 
 	
 
-	oldDataX = newDataX;
-	oldDataY = newDataY;
+
 }
 
 void moveZ(float newDataZ)
@@ -192,7 +211,6 @@ void line(int x0, int x1, int y0, int y1) {
         e2 = 0;
 
   for(;;){
-    printf("%d\t%d\t%d\t\n",x0,y0,e2);
     if (x0==x1 && y0==y1) break;
     e2 = err;
     if (e2 >-dx) { err -= dy; x0 += sx; }
