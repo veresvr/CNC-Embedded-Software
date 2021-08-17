@@ -8,7 +8,10 @@
 					typedef enum {DISABLE = 0, ENABLE = !DISABLE} Subdivisions;
 					
 					
-				Max frequency for STEP pin = 50kHz.
+				Max frequency for STEP pin = 50kHz. -> 0.00002s -> 0.00001s for high level and 0.00001s for low.
+				If uC runs with 72MHz and timer has no divider then 0.00001s = 720 tics.
+				Lets set the timer prescaler for 72: PSC[15:0] = 71. so then 0.00001s = 10 tics.
+				If PWM frequency will be 50kHz -> 0.004s for full turn -> 24mm lenght -> 6 m/s max speed -> 360 m/min max.
 				
 				This library uses Bresenham line algorithm: the code was taken from here http://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#C
 				and modified for my needs.
@@ -75,11 +78,13 @@ typedef struct
  
 uint32_t moveLineXY(float newDataX, float newDataY);
 void moveLineZ(float newDataZ);
-
+void stepsX(int32_t value);
+void stepsY(int32_t value);
+void stepsZ(int32_t value);
 void DriverBoard_Init(void);
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ);
 void REGISTER_state(FunctionalState state);		
-int abs(int number);
+int abs(int number);																			// from stdlib.c
 
 uint32_t moveLineXY(float newDataX, float newDataY)
 {	
@@ -151,15 +156,13 @@ uint32_t moveLineXY(float newDataX, float newDataY)
 	}
 }
 
-void moveLineZ(float newDataZ)
-{
+void moveLineZ(float newDataZ){
 
 	
 	 
 }
 
-void DriverBoard_Init(void)
-{	
+void DriverBoard_Init(void){	
 	// clock 
   RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;					// Timer 2 clock enable 
 	
@@ -177,16 +180,14 @@ void DriverBoard_Init(void)
 																							// Related interrupt or DMA transfer can occur if enabled.
 }
 
-void REGISTER_setData(uint8_t dataXY, uint8_t dataZ)
-{
+void REGISTER_setData(uint8_t dataXY, uint8_t dataZ){
 	//REGISTER_stop();
 	TIM2->CNT = dataXY | (dataZ << 3);
 	//TIM2->ARR = (uint16_t)msec;		// 65535 max
 	
 	//REGISTER_state(); 
 }
-void REGISTER_state(FunctionalState state)
-{
+void REGISTER_state(FunctionalState state){
 	if (state == DISABLE){}											// set register to Hi-z state
 		else {};
 	
@@ -196,6 +197,14 @@ int abs(int number) {
   return number >= 0 ? number : -number;
 }
 
+void stepsX(int32_t value){
+	
+	
+	
+	
+	
+	
+}
 /*		Example of use this library.
 
 
