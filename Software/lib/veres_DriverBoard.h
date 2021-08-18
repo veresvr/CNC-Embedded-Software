@@ -43,6 +43,8 @@
 #define SUBDIVISION_64		64
 #define SUBDIVISION_128		128
 
+#define MINIMUM_TICS			10
+
 #define LENGTH_PER_ONE_STEP_XY(SUBDIVISION)	((PULLEY_TEETH_XY*BELT_PITCH_XY_MM)/STEPS_PER_REV_XY)/(SUBDIVISION)
 
 const double 	DistanceXYPerDiv1 = 0.12,
@@ -78,8 +80,8 @@ typedef struct
  
 uint32_t moveLineXY(float newDataX, float newDataY);
 void moveLineZ(float newDataZ);
-void stepsX(int32_t value);
-void stepsY(int32_t value);
+uint8_t stepsX(int32_t value);
+uint8_t stepsY(int32_t value);
 void stepsZ(int32_t value);
 void DriverBoard_Init(void);
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ);
@@ -88,6 +90,12 @@ int abs(int number);																			// from stdlib.c
 
 uint32_t moveLineXY(float newDataX, float newDataY)
 {	
+	if ( (newDataY == NO_DATA) && (newDataX == NO_DATA) ) {
+		// nothing to move
+	return OK;
+	}
+	
+	
 	float lenghtOfX = newDataX - oldDataX;				// oldData = 0
 	float lenghtOfY = newDataY - oldDataY;
 	
@@ -107,6 +115,7 @@ uint32_t moveLineXY(float newDataX, float newDataY)
 	
 	if ( (newDataX == NO_DATA) && (newDataY != NO_DATA) ) {
 		// move only along Y
+		stepsY(numberOfStepsY);
 	return OK;
 	}
 
@@ -115,10 +124,7 @@ uint32_t moveLineXY(float newDataX, float newDataY)
 	return OK;
 	}
 	
-	if ( (newDataY == NO_DATA) && (newDataX == NO_DATA) ) {
-		// nothing to move
-	return OK;
-	}
+
 	
 	if ( newDataY == newDataX ) {
 		// move simetrically along X and Y
@@ -197,10 +203,24 @@ int abs(int number) {
   return number >= 0 ? number : -number;
 }
 
-void stepsX(int32_t value){
+uint8_t stepsX(int32_t value){
+	
+	uint16_t tics = abs(value) >> 1;
+	if (tics < MINIMUM_TICS) return 1; //ERR
+	TIM1->CCR1 = tics;
 	
 	
 	
+	
+}
+uint8_t stepsY(int32_t value){
+	
+	uint16_t tics = abs(value) >> 1;
+	if (tics < MINIMUM_TICS) return 1; //ERR
+	TIM1->CCR2 = tics;
+	if (value > 0) GPIOA->BSRR =GPIO_BSRR_BS3; 
+		else GPIOA->BSRR =GPIO_BSRR_BS3; 
+	// here need to start the timer
 	
 	
 	
