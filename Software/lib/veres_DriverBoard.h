@@ -63,6 +63,11 @@ float oldDataX = 0,
 			oldDataY = 0,
 			oldDataZ = 0;
 
+uint8_t speedValueMoveXY = 20,
+				speedValueWorkXY = 200,
+				speedValueMoveZ = 20,
+				speedValueWorkZ = 200;
+
 FunctionalState state;
 /*
 typedef struct 
@@ -82,6 +87,8 @@ uint32_t moveLineXY(float newDataX, float newDataY);
 void moveLineZ(float newDataZ);
 uint8_t stepsX(int32_t value);
 uint8_t stepsY(int32_t value);
+uint8_t setSpeedXY(uint16_t value);
+uint8_t setSpeedZ(uint16_t value);
 void stepsZ(int32_t value);
 void DriverBoard_Init(void);
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ);
@@ -215,14 +222,22 @@ uint8_t stepsX(int32_t value){
 }
 uint8_t stepsY(int32_t value){
 	
-	uint16_t tics = abs(value) >> 1;
-	if (tics < MINIMUM_TICS) return 1; //ERR
-	TIM1->CCR2 = tics;
+
 	if (value > 0) GPIOA->BSRR =GPIO_BSRR_BS3; 
 		else GPIOA->BSRR =GPIO_BSRR_BS3; 
 	// here need to start the timer
 	
 	
+	
+}
+uint8_t setSpeedXY(uint16_t value){
+	
+	uint16_t tics = value >> 1;
+	if (tics < MINIMUM_TICS) return 1; //ERR
+	TIM1->CCR2 = tics;
+	
+}
+uint8_t setSpeedZ(uint16_t value){
 	
 }
 /*		Example of use this library.
