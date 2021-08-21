@@ -43,6 +43,10 @@
 #define SUBDIVISION_64		64
 #define SUBDIVISION_128		128
 
+#define AXIS_X						1	
+#define AXIS_Y						2
+#define AXIS_Z						3
+
 #define MINIMUM_TICS			10
 
 #define LENGTH_PER_ONE_STEP_XY(SUBDIVISION)	((PULLEY_TEETH_XY*BELT_PITCH_XY_MM)/STEPS_PER_REV_XY)/(SUBDIVISION)
@@ -67,6 +71,10 @@ uint8_t speedValueMoveXY = 20,
 				speedValueWorkXY = 200,
 				speedValueMoveZ = 20,
 				speedValueWorkZ = 200;
+
+uint32_t	counterStepsX = 0, 
+					counterStepsY = 0, 
+					counterStepsZ = 0;
 
 FunctionalState state;
 /*
@@ -94,6 +102,7 @@ void DriverBoard_Init(void);
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ);
 void REGISTER_state(FunctionalState state);		
 int abs(int number);																			// from stdlib.c
+uint8_t setDirection(uint8_t axis, int32_t value);
 
 uint32_t moveLineXY(float newDataX, float newDataY)
 {	
@@ -110,9 +119,7 @@ uint32_t moveLineXY(float newDataX, float newDataY)
 					numberOfStepsY = lenghtOfY / ActualResolution;	
 	
 	
-	uint32_t 	stepsX, 
-						stepsY, 
-						deltaSteps,
+	uint32_t 	deltaSteps,
 						sideSteps,
 						middleSteps;
 		
@@ -158,6 +165,8 @@ uint32_t moveLineXY(float newDataX, float newDataY)
 	
   for(;;){
     if ( (x0 == numberOfStepsX) && (y0 == numberOfStepsY) ) break;
+		stepsX(numberOfStepsX);
+		stepsY(numberOfStepsY);
     e2 = err;
     if (e2 >-dx) { err -= dy; x0 += sx; }
     if (e2 < dy) { err += dx; y0 += sy; }
@@ -211,13 +220,11 @@ int abs(int number) {
 }
 
 uint8_t stepsX(int32_t value){
+// set direction
+	setDirection(AXIS_X, value);
 	
-	uint16_t tics = abs(value) >> 1;
-	if (tics < MINIMUM_TICS) return 1; //ERR
-	TIM1->CCR1 = tics;
-	
-	
-	
+// start counter
+	counterStepsX = (uint32_t)value;
 	
 }
 uint8_t stepsY(int32_t value){
@@ -234,12 +241,43 @@ uint8_t setSpeedXY(uint16_t value){
 	
 	uint16_t tics = value >> 1;
 	if (tics < MINIMUM_TICS) return 1; //ERR
-	TIM1->CCR2 = tics;
-	
+	TIM1->ARR = value;
+	TIM1->CCR1 = tics;
+	TIM1->CNT = 0;											// reset the counter
+	return 0;
 }
 uint8_t setSpeedZ(uint16_t value){
 	
 }
+
+uint8_t setDirection(uint8_t axis, int32_t value){
+	if (axis == AXIS_X){
+		if (value > 0) GPIOA->BSRR =GPIO_BSRR_BS3;
+			else{
+				GPIOA->BSRR =GPIO_BSRR_BR3;
+				return 0;
+			}
+	}
+	
+	if (axis == AXIS_Y){
+		if (value > 0) GPIOA->BSRR =GPIO_BSRR_BS3;
+			else{
+				GPIOA->BSRR =GPIO_BSRR_BR3;
+				return 0;
+			}
+	}	
+	
+	if (axis == AXIS_Z){
+		if (value > 0) GPIOA->BSRR =GPIO_BSRR_BS3;
+			else{
+				GPIOA->BSRR =GPIO_BSRR_BR3;
+				return 0;
+			}
+	}	
+	
+	return 1;		// none of these 3 axes	
+}
+
 /*		Example of use this library.
 
 

@@ -42,6 +42,7 @@ uint8_t lenghtOfDataPacket = 0,
 // interrupt
 void TIM2_IRQHandler(void);
 void USART1_IRQHandler(void);
+void TIM1_CC_IRQHandler(void);
 
 
 void TIM2_IRQHandler(void)
@@ -107,6 +108,18 @@ void InitAll(void)
 	
    return;   
 }
+void TIM1_CC_IRQHandler(void){
+/*	TIM2->SR &= ~TIM_SR_UIF;					// clear flag of event
+	TIM2->SR &= ~TIM_SR_TIF;
+		
+	TIMER2_stop();
+	
+
+*/
+// here we need to check the steps and decrement it. when steps == 0 - stop the timer
+	
+	
+}
 
 int main(void)
 { 
@@ -118,6 +131,7 @@ int main(void)
 	UART_sendString("hi! ");
 	
 	NVIC_EnableIRQ(TIM2_IRQn);
+	NVIC_EnableIRQ(TIM1_CC_IRQn);				// TIM1 Capture Compare Interrupt
 	NVIC_EnableIRQ(USART1_IRQn);
 	
 	TIMER2_wait_msec(DELAY_OF_DATA);
