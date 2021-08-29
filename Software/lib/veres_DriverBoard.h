@@ -23,7 +23,7 @@
 */
 #include "stdint.h"
 #include "stm32f10x.h"
-#include "D:\development\my_libraries\veres_err_list.h"
+#include "D:\development\my_libraries\veres_defines_list.h"
 
 #define NO_DATA						0
 
@@ -104,8 +104,7 @@ void REGISTER_state(FunctionalState state);
 int abs(int number);																			// from stdlib.c
 uint8_t setDirection(uint8_t axis, int32_t value);
 
-uint32_t moveLineXY(float newDataX, float newDataY)
-{	
+uint32_t moveLineXY(float newDataX, float newDataY){	
 	if ( (newDataY == NO_DATA) && (newDataX == NO_DATA) ) {
 		// nothing to move
 	return OK;
@@ -149,7 +148,9 @@ uint32_t moveLineXY(float newDataX, float newDataY)
 	if ( newDataY != newDataX ){
 		
 	int32_t numberOfStepsX = newDataX / ActualResolution,
-					numberOfStepsY = newDataY / ActualResolution;
+					numberOfStepsY = newDataY / ActualResolution,
+					oldNumberOfStepsX = 0,
+					oldNumberOfStepsY = 0;
 		
   int32_t	dx = abs(numberOfStepsX),
 					sx = 0 < newDataX ? 1 : -1;
@@ -223,6 +224,7 @@ uint8_t stepsX(int32_t value){
 // set direction
 	setDirection(AXIS_X, value);
 	
+	TIM2->RCR = value - 1;										// coz update event (UEV) is generated after upcounting is (TIMx_RCR+1)
 // start counter
 	counterStepsX = (uint32_t)value;
 	
@@ -255,7 +257,7 @@ uint8_t setDirection(uint8_t axis, int32_t value){
 		if (value > 0) GPIOA->BSRR =GPIO_BSRR_BS3;
 			else{
 				GPIOA->BSRR =GPIO_BSRR_BR3;
-				return 0;
+				return OK;
 			}
 	}
 	
@@ -263,7 +265,7 @@ uint8_t setDirection(uint8_t axis, int32_t value){
 		if (value > 0) GPIOA->BSRR =GPIO_BSRR_BS3;
 			else{
 				GPIOA->BSRR =GPIO_BSRR_BR3;
-				return 0;
+				return OK;
 			}
 	}	
 	
@@ -271,11 +273,11 @@ uint8_t setDirection(uint8_t axis, int32_t value){
 		if (value > 0) GPIOA->BSRR =GPIO_BSRR_BS3;
 			else{
 				GPIOA->BSRR =GPIO_BSRR_BR3;
-				return 0;
+				return OK;
 			}
 	}	
 	
-	return 1;		// none of these 3 axes	
+	return SET_DIR_ERROR;		// none of these 3 axes	
 }
 
 /*		Example of use this library.

@@ -18,21 +18,22 @@
 #include "lib\veres_debug_via_UART.h"
 #include "lib\veres_timers.h"
 #include "D:\development\my_libraries\veres_crc8.h"
-#include "D:\development\my_libraries\veres_err_list.h"
+#include "D:\development\my_libraries\veres_defines_list.h"
 #include "D:\development\my_libraries\veres_shpindle_laser.h"
 #include "lib\veres_DriverBoard.h"
 
 
-#define	DELAY_OF_DATA			10		// time of delay before next data packet
+#define	DELAY_OF_DATA			10		// time for delaying before next data packet is coming
 #define DATA_INC_READY		1
 #define DATA_INC_NOREADY	0
 #define PACKET_DATA_SIZE_MAX	30
+#define PACKET_DATA_SIZE_MIN	5
 
 
 // variables
 uint8_t lenghtOfDataPacket = 0,
 				receive_array[PACKET_DATA_SIZE_MAX],
-				statusData = DATA_INC_NOREADY,
+				statusIncomingData = DATA_INC_NOREADY,
 				lenghtData = 0,
 				err_code = NO_ERROR,
 				crcResult = 0;
@@ -45,6 +46,7 @@ void USART1_IRQHandler(void);
 void TIM1_CC_IRQHandler(void);
 
 
+
 void TIM2_IRQHandler(void)
 {
 	TIM2->SR &= ~TIM_SR_UIF;					// clear flag of event
@@ -53,22 +55,19 @@ void TIM2_IRQHandler(void)
 	TIMER2_stop();
 	
 	UART_sendString("Time is gone. Data receive is ");
-	if (lenghtOfDataPacket == 0) 
-	{
+	if (lenghtOfDataPacket == 0) {
 		UART_sendString("zero");  
-		statusData = DATA_INC_NOREADY;
+		statusIncomingData = DATA_INC_NOREADY;
 		lenghtData = lenghtOfDataPacket;
-	} else 
-	{
+	} else {
 		UART_sendOnlyNumber(lenghtOfDataPacket+48);
-		statusData = DATA_INC_READY;
+		statusIncomingData = DATA_INC_READY;
 		lenghtData = lenghtOfDataPacket;
 	}
 	
 	UART_sendString("  !   ");
 	
 	lenghtOfDataPacket = 0;
-	
 }
 
 void USART1_IRQHandler(void)
@@ -80,7 +79,6 @@ void USART1_IRQHandler(void)
 	receive_array[lenghtOfDataPacket] = received_data;
 	lenghtOfDataPacket++;
 	
-
 	TIMER2_wait_msec(DELAY_OF_DATA);
 }
 
@@ -134,7 +132,7 @@ int main(void)
 	NVIC_EnableIRQ(TIM1_CC_IRQn);				// TIM1 Capture Compare Interrupt
 	NVIC_EnableIRQ(USART1_IRQn);
 	
-	TIMER2_wait_msec(DELAY_OF_DATA);
+// for what?	TIMER2_wait_msec(DELAY_OF_DATA);
 	
 	// DEFAULT SETTINGS
 	shpindle(SH_MODE_ON_RIGHT);
@@ -142,13 +140,12 @@ int main(void)
 
 	while(1)	{ 						// other action makes in an interrupt
 		
-		UART_sendString("1 ");
-		if (statusData == DATA_INC_READY)
+//		UART_sendString("1 ");
+		if (statusIncomingData == DATA_INC_READY)
 		{ 
-			statusData = DATA_INC_NOREADY;
+			statusIncomingData = DATA_INC_NOREADY;
 			// UART interrupt must be OFF, for parsing reseived data packet
-			if(lenghtData < 5)
-			{ 
+			if(lenghtData < PACKET_DATA_SIZE_MIN){ 
 				err_code = COMMAND_LESS_5_CHAR;
 				UART_sendString("COMMAND_LESS_5_CHAR  ");				// these and next transmissions only for debug
 				continue;
@@ -163,13 +160,23 @@ int main(void)
 			UART_sendString("GO TO CRC8  ");
 			crcResult = CRC8(&receive_array[1], lenghtData-2);
 			UART_sendString("RETURN FROM CRC8  ");
-			if (crcResult != 0)
+/*			if (crcResult != 0)												// here we need to compare incoming and calculated data! NO WITH ZERO!
 			{
 				err_code = CRC_UNCORR;
 				UART_sendString("CRC_UNCORR  ");
 				continue;
+			} */
+			
+			
+// HERE STARTING TO ANALYSE THE DATA			-----------------------------------------------------------------------------------------------------------
+			
+			
+			if (receive_array[INSTRUCTION] == MOV_STEPS_X_PLUS){
+				UART_sendString("MOV_STEPS_X_PLUS  ");
+				stepsX( (receive_array[2] << 8) | (receive_array[3]) );
 			}
-				
+		/*  its temporary!!!!! change it when i done testing below		
+			
 			if (receive_array[1] == 'M')
 			{
 				if (receive_array[2] == 'S')
@@ -190,7 +197,7 @@ int main(void)
 						else UART_sendString("ERROR!  ");
 				}				
 			}			
-			
+		
 			if ((receive_array[1] == 'E') && (receive_array[2] == 'R'))
 			{	// error request
 			}				
@@ -292,6 +299,9 @@ int main(void)
 			}			
 			
 			
+		
+		*/
+		
 		}
 		
 		
@@ -300,7 +310,7 @@ int main(void)
 		
 		
 		
-		
+	/*	
 		
 		
 		GPIOA->BSRR =GPIO_BSRR_BS3; 		
@@ -309,7 +319,7 @@ int main(void)
    	GPIOA->BSRR =GPIO_BSRR_BR3;
 		for (i = 0; i < 100000; i++); 
 		
-		
+		*/
 		
 	}
 }
