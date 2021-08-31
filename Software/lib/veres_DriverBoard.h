@@ -7,7 +7,13 @@
 					direct overriding clear (!SRCLR) - hight (output pins has its own states)
 					typedef enum {DISABLE = 0, ENABLE = !DISABLE} Subdivisions;
 					
-					
+				Here used TIM3 for generating steps.
+				PA6 - TIM3_CH1 - X steps
+				PA7 - TIM3_CH2 - Y steps
+				PB0 - TIM3_CH3 - Z steps
+				PA5 - GPIO - DIR X
+				PA4 - GPIO - DIR Y
+				PA3 - GPIO - DIR Z
 				Max frequency for STEP pin = 50kHz. -> 0.00002s -> 0.00001s for high level and 0.00001s for low.
 				If uC runs with 72MHz and timer has no divider then 0.00001s = 720 tics.
 				Lets set the timer prescaler for 72: PSC[15:0] = 71. so then 0.00001s = 10 tics.
@@ -187,20 +193,28 @@ void moveLineZ(float newDataZ){
 
 void DriverBoard_Init(void){	
 	// clock 
-  RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;					// Timer 2 clock enable 
+  RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;					// Timer 3 clock enable
 	
-	TIM2->CR1 |= TIM_CR1_ARPE										// TIM_CR1_ARPE  Auto-reload preload enable
-							|TIM_CR1_URS;										// Only counter overflow/underflow generates an update interrupt or DMA request if enabled
-		
-	// interrupt
-	TIM2->DIER |= TIM_DIER_UIE;
+	// timer (more information in AN4776 document)
+	TIM3->CR1 &= ~(TIM_CR1_DIR | TIM_CR1_CMS); 	//  Select the up counter mode
+	TIM1->CR1 &= ~TIM_CR1_CKD;									// clock division = 0
+	TIM3->ARR = MINIMUM_TICS << 1;							// set the period
+	TIM3->CCR1 = MINIMUM_TICS;									// set the pulse
+	TIM3->PSC = 8-1;														// frequensy after prescaller will be 1 MHz.	
+	TIM3->RCR = 5 - 1; 													// Set the Repetition counter value 	
+	TIM3->EGR = TIM_EGR_UG; 										// Generate an update event to reload the Prescaler and the repetition counter value immediately 
+	TIM3->SMCR = RESET;
+	TIM3->CR1 |= TIM_CR1_OPM; 									// Select the OPM Mode 
+	TIM3->CCMR1 &= (uint16_t)~TIM_CCMR1_OC1M;		// clr the PWM mode 2, making frozen
+	TIM3->CCMR1 &= (uint16_t)~TIM_CCMR1_CC1S;		// set channel as output
+	TIM3->CCMR1 |= 	TIM_CCMR1_OC1M;							// set the PWM mode 2
+	TIM3->CCER &= (uint16_t)~TIM_CCER_CC1P;			// OC1 active high
+	TIM3->CCER = TIM_CCER_CC1E; 								// signal is output on the corresponding output pin
+//TIM3->BDTR |= TIM_BDTR_MOE; // Enable the TIM main Output
+	TIM3->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
 	
-	// timer
-	TIM2->ARR = 0;
-//	TIM2->PSC = TIMER2_PRESCALLER-1;						// frequensy after prescaller will be 122 Hz.
-	TIM2->CNT = 0;															// COUNTER
-	TIM2->EGR |= TIM_EGR_TG;										// The TIF flag is set in TIMx_SR register. 
-																							// Related interrupt or DMA transfer can occur if enabled.
+	// GPIO
+	
 }
 
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ){

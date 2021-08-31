@@ -43,7 +43,7 @@ uint8_t lenghtOfDataPacket = 0,
 // interrupt
 void TIM2_IRQHandler(void);
 void USART1_IRQHandler(void);
-void TIM1_CC_IRQHandler(void);
+void TIM3_IRQHandler(void);
 
 
 
@@ -106,7 +106,7 @@ void InitAll(void)
 	
    return;   
 }
-void TIM1_CC_IRQHandler(void){
+void TIM3_IRQHandler(void){
 /*	TIM2->SR &= ~TIM_SR_UIF;					// clear flag of event
 	TIM2->SR &= ~TIM_SR_TIF;
 		
@@ -129,7 +129,7 @@ int main(void)
 	UART_sendString("hi! ");
 	
 	NVIC_EnableIRQ(TIM2_IRQn);
-	NVIC_EnableIRQ(TIM1_CC_IRQn);				// TIM1 Capture Compare Interrupt
+	NVIC_EnableIRQ(TIM3_IRQn);				// TIM1 Capture Compare Interrupt
 	NVIC_EnableIRQ(USART1_IRQn);
 	
 // for what?	TIMER2_wait_msec(DELAY_OF_DATA);
