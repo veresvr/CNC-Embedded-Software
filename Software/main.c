@@ -93,10 +93,10 @@ void InitAll(void)
 									RCC_APB2ENR_USART1EN;				// USART
 	
 	
-   GPIOA->CRL	&= ~GPIO_CRL_CNF3;							// General purpose output push-pull
+ /*  GPIOA->CRL	&= ~GPIO_CRL_CNF3;							// General purpose output push-pull
  
    GPIOA->CRL   |= GPIO_CRL_MODE3_0;					// General purpose output push-pull
-	
+	*/
 	USART1->CR1 |= USART_CR1_RXNEIE;
 	
 	// for led blink
@@ -121,12 +121,13 @@ void TIM3_IRQHandler(void){
 
 int main(void)
 { 
-		int i = 0;
+//		int i = 0;
 	InitAll();
 	UART_Init();
 	TIMER2_Init();
 	SH_LASER_Init();
 	UART_sendString("hi! ");
+	DriverBoard_Init();
 	
 	NVIC_EnableIRQ(TIM2_IRQn);
 	NVIC_EnableIRQ(TIM3_IRQn);				// TIM1 Capture Compare Interrupt

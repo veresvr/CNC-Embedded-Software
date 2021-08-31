@@ -111,10 +111,6 @@ int abs(int number);																			// from stdlib.c
 uint8_t setDirection(uint8_t axis, int32_t value);
 
 uint32_t moveLineXY(float newDataX, float newDataY){	
-	if ( (newDataY == NO_DATA) && (newDataX == NO_DATA) ) {
-		// nothing to move
-	return OK;
-	}
 	
 	
 	float lenghtOfX = newDataX - oldDataX;				// oldData = 0
@@ -123,11 +119,15 @@ uint32_t moveLineXY(float newDataX, float newDataY){
 	int32_t numberOfStepsX = lenghtOfX / ActualResolution,
 					numberOfStepsY = lenghtOfY / ActualResolution;	
 	
-	
-	uint32_t 	deltaSteps,
+if ( (newDataY == NO_DATA) && (newDataX == NO_DATA) ) {
+		// nothing to move
+	return OK;
+	}
+
+/*	uint32_t 	deltaSteps,
 						sideSteps,
 						middleSteps;
-		
+	*/	
 //LENGHT CONVERTING TO STEPS
 //	stepsX = uint32_t (deltaX / ActualDistance);
 //	stepsY = uint32_t (deltaY / ActualDistance);
@@ -197,7 +197,7 @@ void DriverBoard_Init(void){
 	
 	// timer (more information in AN4776 document)
 	TIM3->CR1 &= ~(TIM_CR1_DIR | TIM_CR1_CMS); 	//  Select the up counter mode
-	TIM1->CR1 &= ~TIM_CR1_CKD;									// clock division = 0
+	TIM3->CR1 &= ~TIM_CR1_CKD;									// clock division = 0
 	TIM3->ARR = MINIMUM_TICS << 1;							// set the period
 	TIM3->CCR1 = MINIMUM_TICS;									// set the pulse
 	TIM3->PSC = 8-1;														// frequensy after prescaller will be 1 MHz.	
@@ -214,7 +214,16 @@ void DriverBoard_Init(void){
 	TIM3->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
 	
 	// GPIO
+	GPIOA->CRL |= GPIO_CRL_MODE6;								// 50 MHz 
+	GPIOA->CRL |= GPIO_CRL_CNF6_1;							// Alternate function output Push-pull
+	GPIOA->CRL |= GPIO_CRL_MODE7;								// 50 MHz 
+	GPIOA->CRL |= GPIO_CRL_CNF7_1;							// Alternate function output Push-pull	
+	GPIOB->CRL |= GPIO_CRL_MODE0;								// 50 MHz 
+	GPIOB->CRL |= GPIO_CRL_CNF0_1;							// Alternate function output Push-pull
 	
+	GPIOA->CRL |= GPIO_CRL_MODE5 | GPIO_CRL_MODE4 | GPIO_CRL_MODE3;								// 50 MHz 
+	GPIOA->CRL &= ~(GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0);					// General purpose output push-pull
+
 }
 
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ){
@@ -241,7 +250,7 @@ uint8_t stepsX(int32_t value){
 	TIM2->RCR = value - 1;										// coz update event (UEV) is generated after upcounting is (TIMx_RCR+1)
 // start counter
 	counterStepsX = (uint32_t)value;
-	
+	return OK;	
 }
 uint8_t stepsY(int32_t value){
 	
@@ -251,7 +260,7 @@ uint8_t stepsY(int32_t value){
 	// here need to start the timer
 	
 	
-	
+	return OK;
 }
 uint8_t setSpeedXY(uint16_t value){
 	
@@ -263,7 +272,7 @@ uint8_t setSpeedXY(uint16_t value){
 	return 0;
 }
 uint8_t setSpeedZ(uint16_t value){
-	
+	return OK;
 }
 
 uint8_t setDirection(uint8_t axis, int32_t value){
