@@ -74,6 +74,8 @@ void UART_sendString(char * Text)
 		while(((USART1->SR) & USART_SR_TC) != USART_SR_TC);	    //wait until Transmission is complete		  
 	 	USART1->DR = Text[i];   
   }
+		while(((USART1->SR) & USART_SR_TC) != USART_SR_TC);	    //wait until Transmission is complete		  
+	 	USART1->DR = '\r';	
 }		
 
 void UART_sendNumber(int32_t number)

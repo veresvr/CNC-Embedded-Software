@@ -210,8 +210,8 @@ void DriverBoard_Init(void){
 	TIM3->CCMR1 |= 	TIM_CCMR1_OC1M;							// set the PWM mode 2
 	TIM3->CCER &= (uint16_t)~TIM_CCER_CC1P;			// OC1 active high
 	TIM3->CCER = TIM_CCER_CC1E; 								// signal is output on the corresponding output pin
-//TIM3->BDTR |= TIM_BDTR_MOE; // Enable the TIM main Output
-	TIM3->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
+//TIM3->BDTR |= TIM_BDTR_MOE; 								// Enable the TIM main Output
+//	TIM3->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
 	
 	// GPIO
 	GPIOA->CRL |= GPIO_CRL_MODE6;								// 50 MHz 
@@ -224,6 +224,7 @@ void DriverBoard_Init(void){
 	GPIOA->CRL |= GPIO_CRL_MODE5 | GPIO_CRL_MODE4 | GPIO_CRL_MODE3;								// 50 MHz 
 	GPIOA->CRL &= ~(GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0);					// General purpose output push-pull
 
+	TIM3->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
 }
 
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ){

@@ -101,8 +101,8 @@ void InitAll(void)
 	
 	// for led blink
 	RCC->APB2ENR	|= RCC_APB2ENR_IOPAEN;
-	GPIOA->CRL	&= ~GPIO_CRL_CNF3;							// General purpose output push-pull
-  GPIOA->CRL   |= GPIO_CRL_MODE3_0;						// General purpose output push-pull
+	GPIOA->CRL	&= ~GPIO_CRL_CNF0;							// General purpose output push-pull
+  GPIOA->CRL   |= GPIO_CRL_MODE0_0;						// General purpose output push-pull
 	
    return;   
 }
@@ -121,12 +121,12 @@ void TIM3_IRQHandler(void){
 
 int main(void)
 { 
-//		int i = 0;
+		int i = 0;
 	InitAll();
 	UART_Init();
 	TIMER2_Init();
 	SH_LASER_Init();
-	UART_sendString("hi! ");
+//	UART_sendString("hi! ");
 	DriverBoard_Init();
 	
 	NVIC_EnableIRQ(TIM2_IRQn);
@@ -136,12 +136,13 @@ int main(void)
 // for what?	TIMER2_wait_msec(DELAY_OF_DATA);
 	
 	// DEFAULT SETTINGS
-	shpindle(SH_MODE_ON_RIGHT);
+//	shpindle(SH_MODE_ON_RIGHT);
 	
 
 	while(1)	{ 						// other action makes in an interrupt
 		
-//		UART_sendString("1 ");
+UART_sendString("hi! "); 
+		
 		if (statusIncomingData == DATA_INC_READY)
 		{ 
 			statusIncomingData = DATA_INC_NOREADY;
@@ -161,6 +162,10 @@ int main(void)
 			UART_sendString("GO TO CRC8  ");
 			crcResult = CRC8(&receive_array[1], lenghtData-2);
 			UART_sendString("RETURN FROM CRC8  ");
+			
+//----------------------------------------------------------------------------------------			
+			
+			
 /*			if (crcResult != 0)												// here we need to compare incoming and calculated data! NO WITH ZERO!
 			{
 				err_code = CRC_UNCORR;
@@ -174,8 +179,12 @@ int main(void)
 			
 			if (receive_array[INSTRUCTION] == MOV_STEPS_X_PLUS){
 				UART_sendString("MOV_STEPS_X_PLUS  ");
-				stepsX( (receive_array[2] << 8) | (receive_array[3]) );
+			//	stepsX( (receive_array[2] << 8) | (receive_array[3]) );
 			}
+			
+			
+			
+//----------------------------------------------------------------------------------------------------------------------------------------------------			
 		/*  its temporary!!!!! change it when i done testing below		
 			
 			if (receive_array[1] == 'M')
@@ -301,26 +310,25 @@ int main(void)
 			
 			
 		
-		*/
+		
 		
 		}
 		
+		*/
 		
 		
 		
 		
 		
+		}
 		
-	/*	
+		GPIOA->BSRR =GPIO_BSRR_BS0; 		
+		for (i = 0; i < 500000; i++);
 		
-		
-		GPIOA->BSRR =GPIO_BSRR_BS3; 		
-		for (i = 0; i < 2000000; i++);
-		
-   	GPIOA->BSRR =GPIO_BSRR_BR3;
+   	GPIOA->BSRR =GPIO_BSRR_BR0;
 		for (i = 0; i < 100000; i++); 
 		
-		*/
+		
 		
 	}
 }
