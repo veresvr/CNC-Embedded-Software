@@ -18,7 +18,7 @@
 #include "lib\veres_debug_via_UART.h"
 #include "lib\veres_timers.h"
 #include "D:\development\my_libraries\veres_crc8.h"
-#include "D:\development\my_libraries\veres_defines_list.h"
+#include "D:\development\GitHub\CNC-Embedded-Software\Software\lib\veres_defines_list.h"
 #include "lib\veres_DriverBoard.h"
 
 
@@ -179,8 +179,44 @@ UART_sendString("hi! ");
 				UART_sendString("MOV_STEPS_X_PLUS  ");
 			//	stepsX( (receive_array[2] << 8) | (receive_array[3]) );
 			}
+		
+			if (receive_array[INSTRUCTION] == MOV_STEPS_X_MINUS){
+				UART_sendString("MOV_STEPS_X_MINUS  ");
+			//	stepsX( (receive_array[2] << 8) | (receive_array[3]) );
+			}
+
+			if (receive_array[INSTRUCTION] == MOV_STEPS_Y_PLUS){
+				UART_sendString("MOV_STEPS_Y_PLUS  ");
+			//	stepsX( (receive_array[2] << 8) | (receive_array[3]) );
+			}
+
+			if (receive_array[INSTRUCTION] == MOV_STEPS_Y_MINUS){
+				UART_sendString("MOV_STEPS_Y_MINUS  ");
+			//	stepsX( (receive_array[2] << 8) | (receive_array[3]) );
+			}
+
+			if (receive_array[INSTRUCTION] == MOV_STEPS_Z_PLUS){
+				UART_sendString("MOV_STEPS_Z_PLUS  ");
+			//	stepsX( (receive_array[2] << 8) | (receive_array[3]) );
+			}
+
+			if (receive_array[INSTRUCTION] == MOV_STEPS_Z_MINUS){
+				UART_sendString("MOV_STEPS_Z_MINUS  ");
+			//	stepsX( (receive_array[2] << 8) | (receive_array[3]) );
+			}			
 			
-			
+			if (receive_array[INSTRUCTION] == MOV_CARRIAGE_FREE){
+				UART_sendString("MOV_CARRIAGE_FREE");
+				// here we convert % to uint16_t value and set it to settings
+				settings.freeMove = 0;
+//				stepsX( (receive_array[DATA] << 8) | (receive_array[3]) );
+			}
+
+			if (receive_array[INSTRUCTION] == MOV_CARRIAGE_WORK){
+				UART_sendString("MOV_CARRIAGE_WORK");
+				settings.workMove = 0;
+//				stepsX( (receive_array[2] << 8) | (receive_array[3]) );
+			}			
 			
 //----------------------------------------------------------------------------------------------------------------------------------------------------			
 		/*  its temporary!!!!! change it when i done testing below		

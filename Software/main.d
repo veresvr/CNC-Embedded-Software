@@ -6,6 +6,6 @@
 .\main.o: lib\veres_debug_via_UART.h
 .\main.o: lib\veres_timers.h
 .\main.o: D:\development\my_libraries\veres_crc8.h
-.\main.o: D:\development\my_libraries\veres_defines_list.h
+.\main.o: D:\development\GitHub\CNC-Embedded-Software\Software\lib\veres_defines_list.h
 .\main.o: lib\veres_DriverBoard.h
-.\main.o: D:\development\my_libraries\veres_defines_list.h
+.\main.o: D:\development\GitHub\CNC-Embedded-Software\Software\lib\veres_defines_list.h

@@ -29,7 +29,7 @@
 */
 #include "stdint.h"
 #include "stm32f10x.h"
-#include "D:\development\my_libraries\veres_defines_list.h"
+#include "D:\development\GitHub\CNC-Embedded-Software\Software\lib\veres_defines_list.h"
 
 #define NO_DATA						0
 
@@ -78,6 +78,11 @@ struct  {
 	uint16_t valueOfCurrent;		// for using as Amperes need to valueOfCurrent*0.00322
 }shpindleParameters;
 
+struct {
+	uint16_t freeMove;
+	uint16_t workMove;
+	
+} settings;
 // location where we are
 float oldDataX = 0,
 			oldDataY = 0,
@@ -204,8 +209,30 @@ void moveLineZ(float newDataZ){
 }
 
 void DriverBoard_Init(void){	
+	int i;	// temporary
 	// clock 
   RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;					// Timer 3 clock enable
+	
+	// GPIO
+	GPIOA->CRL |= GPIO_CRL_MODE6;								// 50 MHz 
+	GPIOA->CRL |= GPIO_CRL_CNF6_1;							// Alternate function output Push-pull
+	GPIOA->CRL |= GPIO_CRL_MODE7;								// 50 MHz 
+	GPIOA->CRL |= GPIO_CRL_CNF7_1;							// Alternate function output Push-pull	
+	GPIOB->CRL |= GPIO_CRL_MODE0;								// 50 MHz 
+	GPIOB->CRL |= GPIO_CRL_CNF0_1;							// Alternate function output Push-pull
+	
+	
+		GPIOA->BSRR =GPIO_BSRR_BS0; 		
+		for ( i = 0; i < 1000; i++);
+   	GPIOA->BSRR =GPIO_BSRR_BR0;
+		for ( i = 0; i < 1000; i++); 
+		GPIOA->BSRR =GPIO_BSRR_BS0; 		
+		for ( i = 0; i < 1000; i++);
+   	GPIOA->BSRR =GPIO_BSRR_BR0;
+		for ( i = 0; i < 1000; i++); 
+	
+	GPIOA->CRL |= GPIO_CRL_MODE5 | GPIO_CRL_MODE4 | GPIO_CRL_MODE3;								// 50 MHz 
+	GPIOA->CRL &= ~(GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0);					// General purpose output push-pull
 	
 	// timer (more information in AN4776 document)
 	TIM3->CR1 &= ~(TIM_CR1_DIR | TIM_CR1_CMS); 	//  Select the up counter mode
@@ -217,7 +244,7 @@ void DriverBoard_Init(void){
 	TIM3->EGR = TIM_EGR_UG; 										// Generate an update event to reload the Prescaler and the repetition counter value immediately 
 	TIM3->SMCR = RESET;
 	TIM3->CR1 |= TIM_CR1_OPM; 									// Select the OPM Mode 
-	TIM3->CCMR1 &= (uint16_t)~TIM_CCMR1_OC1M;		// clr the PWM mode 2, making frozen
+//	TIM3->CCMR1 &= (uint16_t)~TIM_CCMR1_OC1M;		// clr the PWM mode 2, making frozen
 	TIM3->CCMR1 &= (uint16_t)~TIM_CCMR1_CC1S;		// set channel as output
 	TIM3->CCMR1 |= 	TIM_CCMR1_OC1M;							// set the PWM mode 2
 	TIM3->CCER &= (uint16_t)~TIM_CCER_CC1P;			// OC1 active high
@@ -225,16 +252,7 @@ void DriverBoard_Init(void){
 //TIM3->BDTR |= TIM_BDTR_MOE; 								// Enable the TIM main Output
 //	TIM3->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
 	
-	// GPIO
-	GPIOA->CRL |= GPIO_CRL_MODE6;								// 50 MHz 
-	GPIOA->CRL |= GPIO_CRL_CNF6_1;							// Alternate function output Push-pull
-	GPIOA->CRL |= GPIO_CRL_MODE7;								// 50 MHz 
-	GPIOA->CRL |= GPIO_CRL_CNF7_1;							// Alternate function output Push-pull	
-	GPIOB->CRL |= GPIO_CRL_MODE0;								// 50 MHz 
-	GPIOB->CRL |= GPIO_CRL_CNF0_1;							// Alternate function output Push-pull
-	
-	GPIOA->CRL |= GPIO_CRL_MODE5 | GPIO_CRL_MODE4 | GPIO_CRL_MODE3;								// 50 MHz 
-	GPIOA->CRL &= ~(GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0);					// General purpose output push-pull
+
 
 	TIM3->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
 	
