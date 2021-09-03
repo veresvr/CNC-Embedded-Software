@@ -7,6 +7,5 @@
 .\main.o: lib\veres_timers.h
 .\main.o: D:\development\my_libraries\veres_crc8.h
 .\main.o: D:\development\my_libraries\veres_defines_list.h
-.\main.o: D:\development\my_libraries\veres_shpindle_laser.h
 .\main.o: lib\veres_DriverBoard.h
 .\main.o: D:\development\my_libraries\veres_defines_list.h

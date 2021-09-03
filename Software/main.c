@@ -19,7 +19,6 @@
 #include "lib\veres_timers.h"
 #include "D:\development\my_libraries\veres_crc8.h"
 #include "D:\development\my_libraries\veres_defines_list.h"
-#include "D:\development\my_libraries\veres_shpindle_laser.h"
 #include "lib\veres_DriverBoard.h"
 
 
@@ -35,7 +34,7 @@ uint8_t lenghtOfDataPacket = 0,
 				receive_array[PACKET_DATA_SIZE_MAX],
 				statusIncomingData = DATA_INC_NOREADY,
 				lenghtData = 0,
-				err_code = NO_ERROR,
+				err_code = SUCCESS,
 				crcResult = 0;
 
 
@@ -125,7 +124,6 @@ int main(void)
 	InitAll();
 	UART_Init();
 	TIMER2_Init();
-	SH_LASER_Init();
 //	UART_sendString("hi! ");
 	DriverBoard_Init();
 	

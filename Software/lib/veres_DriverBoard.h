@@ -55,6 +55,10 @@
 
 #define MINIMUM_TICS			10
 
+#define SH_MODE_OFF			 	0x00		// drive to shpindle
+#define SH_MODE_ON_LEFT	 	0x01
+#define SH_MODE_ON_RIGHT 	0x02
+
 #define LENGTH_PER_ONE_STEP_XY(SUBDIVISION)	((PULLEY_TEETH_XY*BELT_PITCH_XY_MM)/STEPS_PER_REV_XY)/(SUBDIVISION)
 
 const double 	DistanceXYPerDiv1 = 0.12,
@@ -67,6 +71,12 @@ const double 	DistanceXYPerDiv1 = 0.12,
 							DistanceXYPerDiv128 = 0.0009375;
 
 const double ActualResolution = DistanceXYPerDiv1;
+
+struct  {
+	FunctionalState state;
+	uint8_t speed;
+	uint16_t valueOfCurrent;		// for using as Amperes need to valueOfCurrent*0.00322
+}shpindleParameters;
 
 // location where we are
 float oldDataX = 0,
@@ -109,6 +119,8 @@ void REGISTER_setData(uint8_t dataXY, uint8_t dataZ);
 void REGISTER_state(FunctionalState state);		
 int abs(int number);																			// from stdlib.c
 uint8_t setDirection(uint8_t axis, int32_t value);
+void shpindle(uint8_t mode);
+void getValueOfCurrent(void);
 
 uint32_t moveLineXY(float newDataX, float newDataY){	
 	
@@ -225,6 +237,14 @@ void DriverBoard_Init(void){
 	GPIOA->CRL &= ~(GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0);					// General purpose output push-pull
 
 	TIM3->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
+	
+	//shpindle
+	shpindle(DISABLE);
+	shpindleParameters.state = DISABLE;
+	shpindleParameters.speed = 0;
+	shpindleParameters.valueOfCurrent = 0;
+	
+	//steppers
 }
 
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ){
@@ -304,6 +324,15 @@ uint8_t setDirection(uint8_t axis, int32_t value){
 	return SET_DIR_ERROR;		// none of these 3 axes	
 }
 
+void shpindle(uint8_t mode){
+
+	if (mode == DISABLE) GPIOB->BSRR = GPIO_BSRR_BR9;
+	if (mode == ENABLE) GPIOB->BSRR = GPIO_BSRR_BS9;
+}
+
+void getValueOfCurrent(void){
+	//start conversation & ON event generation
+}
 /*		Example of use this library.
 
 
