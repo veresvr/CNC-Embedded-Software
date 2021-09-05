@@ -81,6 +81,14 @@ struct  {
 struct {
 	uint16_t freeMove;
 	uint16_t workMove;
+	uint16_t freeMoveAtZ;
+	uint16_t workMoveAtZ;	
+	uint16_t endSensorXplus		: 1;
+	uint16_t endSensorXminus	: 1;
+	uint16_t endSensorYplus		: 1;
+	uint16_t endSensorYminus	: 1;
+	uint16_t endSensorZplus		: 1;
+	uint16_t endSensorZminus	: 1;
 	
 } settings;
 // location where we are
@@ -124,7 +132,7 @@ void REGISTER_setData(uint8_t dataXY, uint8_t dataZ);
 void REGISTER_state(FunctionalState state);		
 int abs(int number);																			// from stdlib.c
 uint8_t setDirection(uint8_t axis, int32_t value);
-void shpindle(uint8_t mode);
+void shpindleMode(uint8_t mode);
 void getValueOfCurrent(void);
 
 uint32_t moveLineXY(float newDataX, float newDataY){	
@@ -257,7 +265,7 @@ void DriverBoard_Init(void){
 	TIM3->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
 	
 	//shpindle
-	shpindle(DISABLE);
+	shpindleMode(DISABLE);
 	shpindleParameters.state = DISABLE;
 	shpindleParameters.speed = 0;
 	shpindleParameters.valueOfCurrent = 0;
@@ -342,10 +350,11 @@ uint8_t setDirection(uint8_t axis, int32_t value){
 	return SET_DIR_ERROR;		// none of these 3 axes	
 }
 
-void shpindle(uint8_t mode){
+void shpindleMode(uint8_t mode){
 
 	if (mode == DISABLE) GPIOB->BSRR = GPIO_BSRR_BR9;
 	if (mode == ENABLE) GPIOB->BSRR = GPIO_BSRR_BS9;
+	shpindleParameters.state = mode;
 }
 
 void getValueOfCurrent(void){

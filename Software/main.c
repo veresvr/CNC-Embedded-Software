@@ -218,6 +218,22 @@ UART_sendString("hi! ");
 //				stepsX( (receive_array[2] << 8) | (receive_array[3]) );
 			}			
 			
+			if (receive_array[INSTRUCTION] == MOV_CARRIAGE_AT_Z_FREE){
+				UART_sendString("MOV_CARRIAGE_AT_Z_FREE");
+				// here we convert % to uint16_t value and set it to settings
+				settings.freeMoveAtZ = 0;
+			}
+
+			if (receive_array[INSTRUCTION] == MOV_CARRIAGE_AT_Z_WORK){
+				UART_sendString("MOV_CARRIAGE_AT_Z_WORK");
+				settings.workMoveAtZ = 0;
+			}	
+			
+			if (receive_array[INSTRUCTION] == SHPINDLE_MODE){
+				UART_sendString("SHPINDLE_MODE");
+				shpindleMode(receive_array[DATA]);
+			}			
+			
 //----------------------------------------------------------------------------------------------------------------------------------------------------			
 		/*  its temporary!!!!! change it when i done testing below		
 			
@@ -242,9 +258,7 @@ UART_sendString("hi! ");
 				}				
 			}			
 		
-			if ((receive_array[1] == 'E') && (receive_array[2] == 'R'))
-			{	// error request
-			}				
+			
 			
 			if ((receive_array[1] == 'T') && (receive_array[2] == 'D'))
 			{	// time delay
@@ -269,35 +283,7 @@ UART_sendString("hi! ");
 				}				
 			}	
 
-			if (receive_array[1] == 'Z')
-			{	// move of Z axiss
-				if (receive_array[2] == 'P')
-				{ // to plus end
-				}
-				
-				if (receive_array[2] == 'M')
-				{ // to minus end
-				}
 
-				if (receive_array[2] == 'Z')
-				{ // to zero of machine
-				}				
-			}	
-
-			if (receive_array[1] == 'X')
-			{	// move of X axiss
-				if (receive_array[2] == 'P')
-				{ // to plus end
-				}
-				
-				if (receive_array[2] == 'M')
-				{ // to minus end
-				}
-
-				if (receive_array[2] == 'Z')
-				{ // to zero of machine
-				}				
-			}
 
 			if (receive_array[1] == 'Y')
 			{	// move of Z axiss
