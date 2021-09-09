@@ -141,6 +141,8 @@ int main(void)
 		
 UART_sendString("hi! "); 
 		
+			TIM3->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
+		
 		if (statusIncomingData == DATA_INC_READY)
 		{ 
 			statusIncomingData = DATA_INC_NOREADY;
