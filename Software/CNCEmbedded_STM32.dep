@@ -1,14 +1,14 @@
 Dependencies for Project 'CNCEmbedded', Target 'STM32': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
-F (.\STM32F10x.s)(0x4BB1F334)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork -I.\RTE\_STM32-IC:\Users\ruver\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include-IC:\Users\ruver\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include--pd "__UVISION_VERSION SETA 533" --pd "_RTE_ SETA 1" --pd "STM32F10X_MD SETA 1" --pd "_RTE_ SETA 1"--list .\stm32f10x.lst --xref -o .\stm32f10x.o --depend .\stm32f10x.d)
-F (.\CMSIS\CoreSupport\core_cm3.c)(0x4BD15CF4)(-c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I .\CMSIS\CoreSupport -I .\CMSIS\DeviceSupport\ST\STM32F10x -I .\Main -I ..\Keil_p1-I.\RTE\_STM32-IC:\Users\ruver\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include-IC:\Users\ruver\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="533" -D_RTE_ -DSTM32F10X_MD -D_RTE_-o .\core_cm3.o --omf_browse .\core_cm3.crf --depend .\core_cm3.d)
+F (.\STM32F10x.s)(0x4BB1F334)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork -I.\RTE\_STM32-IC:\Users\ruver\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\Include-IC:\Users\ruver\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include--pd "__UVISION_VERSION SETA 533" --pd "_RTE_ SETA 1" --pd "STM32F10X_MD SETA 1" --pd "_RTE_ SETA 1"--list .\stm32f10x.lst --xref -o .\stm32f10x.o --depend .\stm32f10x.d)
+F (.\CMSIS\CoreSupport\core_cm3.c)(0x4BD15CF4)(-c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I .\CMSIS\CoreSupport -I .\CMSIS\DeviceSupport\ST\STM32F10x -I .\Main -I ..\Keil_p1-I.\RTE\_STM32-IC:\Users\ruver\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\Include-IC:\Users\ruver\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="533" -D_RTE_ -DSTM32F10X_MD -D_RTE_-o .\core_cm3.o --omf_browse .\core_cm3.crf --depend .\core_cm3.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5E8E7502)
-F (.\CMSIS\DeviceSupport\ST\STM32F10x\system_stm32f10x.c)(0x4BD15CF6)(-c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I .\CMSIS\CoreSupport -I .\CMSIS\DeviceSupport\ST\STM32F10x -I .\Main -I ..\Keil_p1-I.\RTE\_STM32-IC:\Users\ruver\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include-IC:\Users\ruver\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="533" -D_RTE_ -DSTM32F10X_MD -D_RTE_-o .\system_stm32f10x.o --omf_browse .\system_stm32f10x.crf --depend .\system_stm32f10x.d)
+F (.\CMSIS\DeviceSupport\ST\STM32F10x\system_stm32f10x.c)(0x4BD15CF6)(-c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I .\CMSIS\CoreSupport -I .\CMSIS\DeviceSupport\ST\STM32F10x -I .\Main -I ..\Keil_p1-I.\RTE\_STM32-IC:\Users\ruver\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\Include-IC:\Users\ruver\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="533" -D_RTE_ -DSTM32F10X_MD -D_RTE_-o .\system_stm32f10x.o --omf_browse .\system_stm32f10x.crf --depend .\system_stm32f10x.d)
 I (CMSIS\DeviceSupport\ST\STM32F10x\stm32f10x.h)(0x4BD15CF4)
 I (.\CMSIS\CoreSupport\core_cm3.h)(0x4BD15CF4)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5E8E7502)
 I (CMSIS\DeviceSupport\ST\STM32F10x\system_stm32f10x.h)(0x4BD15CF6)
-F (.\main.c)(0x61349542)(-c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I .\CMSIS\CoreSupport -I .\CMSIS\DeviceSupport\ST\STM32F10x -I .\Main -I ..\Keil_p1-I.\RTE\_STM32-IC:\Users\ruver\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include-IC:\Users\ruver\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="533" -D_RTE_ -DSTM32F10X_MD -D_RTE_-o .\main.o --omf_browse .\main.crf --depend .\main.d)
+F (.\main.c)(0x613BDFB5)(-c --cpu Cortex-M3 -D__EVAL -g -O0 --apcs=interwork -I .\CMSIS\CoreSupport -I .\CMSIS\DeviceSupport\ST\STM32F10x -I .\Main -I ..\Keil_p1-I.\RTE\_STM32-IC:\Users\ruver\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\Include-IC:\Users\ruver\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="533" -D_RTE_ -DSTM32F10X_MD -D_RTE_-o .\main.o --omf_browse .\main.crf --depend .\main.d)
 I (.\CMSIS\DeviceSupport\ST\STM32F10x\stm32f10x.h)(0x4BD15CF4)
 I (.\CMSIS\CoreSupport\core_cm3.h)(0x4BD15CF4)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5E8E7502)
@@ -16,5 +16,5 @@ I (.\CMSIS\DeviceSupport\ST\STM32F10x\system_stm32f10x.h)(0x4BD15CF6)
 I (lib\veres_debug_via_UART.h)(0x612FFFEB)
 I (lib\veres_timers.h)(0x55983494)
 I (D:\development\my_libraries\veres_crc8.h)(0x5828B8A6)
-I (D:\development\GitHub\CNC-Embedded-Software\Software\lib\veres_defines_list.h)(0x6134187B)
+I (D:\development\GitHub\CNC-Embedded-Software\Software\lib\veres_defines_list.h)(0x613BDD40)
 I (lib\veres_DriverBoard.h)(0x61349540)

@@ -236,57 +236,55 @@ UART_sendString("hi! ");
 				shpindleMode(receive_array[DATA]);
 			}			
 			
+			if (receive_array[INSTRUCTION] == GOTO_COMMAND){
+				UART_sendString("SHPINDLE_MODE");
+				
+				switch (receive_array[DATA]) {
+					case GOTO_HOME: 
+						
+						break;
+					
+					case GOTO_LOCAL_ZERO: 
+						
+						break;		
+
+					case GOTO_X_PLUS: 
+						
+						break;
+
+					case GOTO_X_MINUS: 
+						
+						break;
+
+					case GOTO_Y_PLUS: 
+						
+						break;
+
+					case GOTO_Y_MINUS: 
+						
+						break;
+
+					case GOTO_Z_PLUS: 
+						
+						break;
+
+					case GOTO_Z_MINUS: 
+						
+						break;		
+					default:
+						UART_sendString("error in goto data");
+				}
+							
+			}	
+			
+			if (receive_array[INSTRUCTION] == END_SONSORS_STATUS){
+				UART_sendString("END_SONSORS_STATUS");
+				
+			}	
+			
 //----------------------------------------------------------------------------------------------------------------------------------------------------			
 		/*  its temporary!!!!! change it when i done testing below		
 			
-			if (receive_array[1] == 'M')
-			{
-				if (receive_array[2] == 'S')
-				{ 
-					if (shpindle(SH_MODE_OFF) == NO_ERROR) UART_sendString("SH_MODE_OFF OK  ");					// stop shpindle, send ACK to PC
-						else UART_sendString("ERROR!  ");				// NACK
-				}
-				
-				if (receive_array[2] == 'L')
-				{ // shpindle to left
-					if (shpindle(SH_MODE_ON_LEFT) == NO_ERROR) UART_sendString("SH_MODE_ON_LEFT OK  ");					// stop shpindle, send ACK to PC
-						else UART_sendString("ERROR!  ");				// NACK					
-				}
-				
-				if (receive_array[2] == 'R')
-				{ // shpindle to right
-					if (shpindle(SH_MODE_ON_RIGHT) == NO_ERROR) UART_sendString("SH_MODE_ON_RIGHT OK  ");					// stop shpindle, send ACK to PC
-						else UART_sendString("ERROR!  ");
-				}				
-			}			
-		
-			
-			
-			if ((receive_array[1] == 'T') && (receive_array[2] == 'D'))
-			{	// time delay
-			}				
-
-			if (receive_array[1] == 'S')
-			{
-				if (receive_array[2] == 'T')
-				{ // stop programm
-				}
-				
-				if (receive_array[2] == 'X')
-				{ // shift to number of steps on X
-				}
-				
-				if (receive_array[2] == 'Y')
-				{ // shift to number of steps on Y
-				}		
-
-				if (receive_array[2] == 'Z')
-				{ // shift to number of steps on Z
-				}				
-			}	
-
-
-
 			if (receive_array[1] == 'Y')
 			{	// move of Z axiss
 				if (receive_array[2] == 'P')

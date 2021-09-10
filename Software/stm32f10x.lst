@@ -445,7 +445,7 @@ ARM Macro Assembler    Page 7
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
 ork --depend=.\stm32f10x.d -o.\stm32f10x.o -I.\RTE\_STM32 -IC:\Users\ruver\AppD
-ata\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include -IC:\Users\ruver\AppData
+ata\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\Include -IC:\Users\ruver\AppData
 \Local\Arm\Packs\Keil\STM32F1xx_DFP\2.3.0\Device\Include --predefine="__EVAL SE
 TA 1" --predefine="__UVISION_VERSION SETA 533" --predefine="_RTE_ SETA 1" --pre
 define="STM32F10X_MD SETA 1" --predefine="_RTE_ SETA 1" --list=.\stm32f10x.lst 
