@@ -141,10 +141,15 @@ int main(void)
 		
 UART_sendString("hi! "); 
 		
-			TIM3->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
+		TIM1->SR &= ~TIM_SR_UIF;
+			TIM1->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
+		
+		
+		
+		
 		
 		if (statusIncomingData == DATA_INC_READY)
-		{ 
+		{ /*
 			statusIncomingData = DATA_INC_NOREADY;
 			// UART interrupt must be OFF, for parsing reseived data packet
 			if(lenghtData < PACKET_DATA_SIZE_MIN){ 
@@ -162,7 +167,7 @@ UART_sendString("hi! ");
 			UART_sendString("GO TO CRC8  ");
 			crcResult = CRC8(&receive_array[1], lenghtData-2);
 			UART_sendString("RETURN FROM CRC8  ");
-			
+		*/	
 //----------------------------------------------------------------------------------------			
 			
 			
@@ -175,7 +180,7 @@ UART_sendString("hi! ");
 			
 			
 // HERE STARTING TO ANALYSE THE DATA			-----------------------------------------------------------------------------------------------------------
-			
+	/*		
 			
 			if (receive_array[INSTRUCTION] == MOV_STEPS_X_PLUS){
 				UART_sendString("MOV_STEPS_X_PLUS  ");
@@ -281,7 +286,7 @@ UART_sendString("hi! ");
 				UART_sendString("END_SONSORS_STATUS");
 				
 			}	
-			
+			*/
 //----------------------------------------------------------------------------------------------------------------------------------------------------			
 		/*  its temporary!!!!! change it when i done testing below		
 			
