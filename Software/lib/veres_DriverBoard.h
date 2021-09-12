@@ -228,15 +228,7 @@ void DriverBoard_Init(void){
 //	GPIOB->CRH |= GPIO_CRL_MODE0;								// 50 MHz 
 //	GPIOB->CRH |= GPIO_CRL_CNF0_1;							// Alternate function output Push-pull
 	
-	/*
-		GPIOA->BSRR =GPIO_BSRR_BS0; 		
-		for ( i = 0; i < 1000; i++);
-   	GPIOA->BSRR =GPIO_BSRR_BR0;
-		for ( i = 0; i < 1000; i++); 
-		GPIOA->BSRR =GPIO_BSRR_BS0; 		
-		for ( i = 0; i < 1000; i++);
-   	GPIOA->BSRR =GPIO_BSRR_BR0;
-		for ( i = 0; i < 1000; i++); */
+
 	
 	GPIOA->CRL |= GPIO_CRL_MODE5 | GPIO_CRL_MODE4 | GPIO_CRL_MODE3;								// 50 MHz 
 	GPIOA->CRL &= ~(GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0 | GPIO_CRL_CNF5_0);					// General purpose output push-pull
@@ -298,9 +290,19 @@ int abs(int number) {
 uint8_t stepsX(int32_t value){
 // set direction
 	setDirection(AXIS_X, value);
-	
-	TIM2->RCR = value - 1;										// coz update event (UEV) is generated after upcounting is (TIMx_RCR+1)
-// start counter
+	counterStepsX = abs(value);
+	if( counterStepsX > REPETITION_VALUE_MAX ){
+		TIM1->EGR |= TIM_EGR_UG;														// generate event
+		TIM1->RCR = REPETITION_VALUE_MAX - 1;
+		counterStepsX -= REPETITION_VALUE_MAX;
+	}
+		else{
+			TIM1->EGR &= ~TIM_EGR_UG;													// not need here the event
+			TIM1->RCR = counterStepsX - 1;										// coz update event (UEV) is generated after upcounting is (TIMx_RCR+1)
+		}
+// start counter		
+	TIM1->CR1 |= TIM_CR1_CEN;	
+
 	counterStepsX = (uint32_t)value;
 	return OK;	
 }

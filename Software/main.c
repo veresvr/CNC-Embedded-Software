@@ -43,7 +43,7 @@ uint8_t lenghtOfDataPacket = 0,
 void TIM2_IRQHandler(void);
 void USART1_IRQHandler(void);
 void TIM3_IRQHandler(void);
-
+void TIM1_UP_IRQHandler(void);
 
 
 void TIM2_IRQHandler(void)
@@ -80,7 +80,21 @@ void USART1_IRQHandler(void)
 	
 	TIMER2_wait_msec(DELAY_OF_DATA);
 }
-
+void TIM1_UP_IRQHandler(void){
+	
+	if (counterStepsX > REPETITION_VALUE_MAX){
+		TIM1->RCR = REPETITION_VALUE_MAX - 1;
+		counterStepsX -= REPETITION_VALUE_MAX;
+	}else{
+		if (counterStepsX != 0){											
+			TIM1->RCR = counterStepsX - 1;
+			counterStepsX = 0;
+		}else{ // counterStepsX == 0 right now
+			// set success for moving status
+		}
+	}
+	
+}
 void InitAll(void)
 {
 	// before next code, this stuff is config auto:  RCC_CR = HSION | HSIRDY | HSITRIM[1<<4]

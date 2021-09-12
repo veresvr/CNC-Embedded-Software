@@ -50,3 +50,5 @@
 #define GOTO_Y_MINUS                            6
 #define GOTO_Z_PLUS                             7
 #define GOTO_Z_MINUS                            8
+
+#define REPETITION_VALUE_MAX	255
