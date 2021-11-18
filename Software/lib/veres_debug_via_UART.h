@@ -22,7 +22,8 @@
 void UART_sendOnlyNumber(uint32_t message);
 void UART_Init(void);
 void UART_sendString(char * Text);
-void UART_sendNumber(int32_t number);								
+void UART_sendNumber(int32_t number);	
+uint8_t sendData(char * Data);
 
 
 /*
@@ -35,6 +36,11 @@ sendMSG(message);
 
 */
 
+uint8_t sendData(char * Data)
+{
+	
+	return 0;
+}
 void UART_sendOnlyNumber(uint32_t message)
 {
 	while(((USART1->SR) & USART_SR_TC) != USART_SR_TC);	    //wait until Transmission is complete			  

@@ -28,6 +28,9 @@
 #define PACKET_DATA_SIZE_MAX	30
 #define PACKET_DATA_SIZE_MIN	5
 
+// const
+const uint8_t CNC_ID = 86;
+
 
 // variables
 uint8_t lenghtOfDataPacket = 0,
@@ -150,15 +153,19 @@ int main(void)
 	// DEFAULT SETTINGS
 //	shpindle(SH_MODE_ON_RIGHT);
 	
+	
+
+	
+	
 
 	while(1)	{ 						// other action makes in an interrupt
 		
 UART_sendString("hi! "); 
 		
-		TIM1->SR &= ~TIM_SR_UIF;
+
+		
+					TIM1->SR &= ~TIM_SR_UIF;
 			TIM1->CR1 |= TIM_CR1_CEN; 									// Enable the TIM peripheral 
-		
-		
 		
 		
 		
@@ -194,7 +201,16 @@ UART_sendString("hi! ");
 			
 			
 // HERE STARTING TO ANALYSE THE DATA			-----------------------------------------------------------------------------------------------------------
+			
+			if (receive_array[INSTRUCTION] == END_SENSORS_STATUS){
+				UART_sendString("END_SENSORS_STATUS");
+				char temp[3] = {END_SENSORS_STATUS,
+												settings.endSensorZminus<<5 | settings.endSensorZplus<<4 | settings.endSensorYminus<<3 | settings.endSensorYplus<<2 | settings.endSensorXminus<<1 | settings.endSensorXplus<<0,
+												CRC8(temp, 2)};
+				sendData(temp);
+			}
 	/*		
+			
 			
 			if (receive_array[INSTRUCTION] == MOV_STEPS_X_PLUS){
 				UART_sendString("MOV_STEPS_X_PLUS  ");
@@ -365,7 +381,7 @@ UART_sendString("hi! ");
 		for (i = 0; i < 500000; i++);
 		
    	GPIOA->BSRR =GPIO_BSRR_BR0;
-		for (i = 0; i < 100000; i++); 
+		for (i = 0; i < 500000; i++); 
 		
 		
 		

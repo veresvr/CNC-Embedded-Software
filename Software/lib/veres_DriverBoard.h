@@ -53,7 +53,7 @@
 #define AXIS_Y						2
 #define AXIS_Z						3
 
-#define MINIMUM_TICS			500
+#define MINIMUM_TICS			2000
 
 #define SH_MODE_OFF			 	0x00		// drive to shpindle
 #define SH_MODE_ON_LEFT	 	0x01
@@ -268,6 +268,9 @@ void DriverBoard_Init(void){
 	shpindleParameters.valueOfCurrent = 0;
 	
 	//steppers
+	
+	// end sensors
+	
 }
 
 void REGISTER_setData(uint8_t dataXY, uint8_t dataZ){

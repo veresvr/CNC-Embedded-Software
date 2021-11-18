@@ -52,3 +52,6 @@
 #define GOTO_Z_MINUS                            8
 
 #define REPETITION_VALUE_MAX	255
+
+// INSTRUCTION variants:
+#define END_SENSORS_STATUS			101				// ASCII e
