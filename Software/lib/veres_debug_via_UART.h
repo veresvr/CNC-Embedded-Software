@@ -18,12 +18,15 @@
 #include "stdint.h"
 #include "stm32f10x.h"
 
+#include "D:\development\GitHub\CNC-Embedded-Software\Software\lib\veres_defines_list.h"
 
 void UART_sendOnlyNumber(uint32_t message);
 void UART_Init(void);
 void UART_sendString(char * Text);
 void UART_sendNumber(int32_t number);	
-uint8_t sendData(char * Data);
+uint8_t sendData(const char * Data);
+
+
 
 
 /*
@@ -36,11 +39,19 @@ sendMSG(message);
 
 */
 
-uint8_t sendData(char * Data)
+uint8_t sendData(const char * Data)
 {
-	
+	// here we send Data to the PC
+	uint8_t i = 0;
+     
+  for (i = 0; Data[i] != 0; i++)
+  {		
+		while(((USART1->SR) & USART_SR_TC) != USART_SR_TC);	    //wait until Transmission is complete		  
+	 	USART1->DR = Data[i];   
+  }
 	return 0;
 }
+
 void UART_sendOnlyNumber(uint32_t message)
 {
 	while(((USART1->SR) & USART_SR_TC) != USART_SR_TC);	    //wait until Transmission is complete			  

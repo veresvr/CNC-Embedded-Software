@@ -21,12 +21,16 @@
 #include "D:\development\GitHub\CNC-Embedded-Software\Software\lib\veres_defines_list.h"
 #include "lib\veres_DriverBoard.h"
 
+//#define DEBUG_MODE
 
-#define	DELAY_OF_DATA			10		// time for delaying before next data packet is coming
-#define DATA_INC_READY		1
-#define DATA_INC_NOREADY	0
-#define PACKET_DATA_SIZE_MAX	30
-#define PACKET_DATA_SIZE_MIN	5
+  #ifdef DEBUG_MODE
+  #endif
+
+#define	DELAY_OF_DATA							10		// time for delaying before next data packet is coming
+#define DATA_INC_READY						1
+#define DATA_INC_NOREADY					0
+#define PACKET_DATA_SIZE_MAX			30
+#define PACKET_DATA_SIZE_MIN			5
 
 // const
 const uint8_t CNC_ID = 86;
@@ -39,14 +43,30 @@ uint8_t lenghtOfDataPacket = 0,
 				lenghtData = 0,
 				err_code = SUCCESS,
 				crcResult = 0;
+				
+uint32_t 	globalCoordinateX = 0,
+					globalCoordinateY = 0,
+					globalCoordinateZ = 0,
+					localCoordinateX = 0,
+					localCoordinateY = 0,
+					localCoordinateZ = 0,
+					changeToolCoordinateX = 0,
+					changeToolCoordinateY = 0,
+					changeToolCoordinateZ = 0;
+					
+					
+const	char ACK[5] = { '[', ACKNOWLEDGE, 1, ']', '\0' };
+char NACK[6] = { '[', NEGATIVE_ACKNOWLEDGE, 0, 1, ']', '\0' }; 
 
-
-
-// interrupt
+// interrupts
 void TIM2_IRQHandler(void);
 void USART1_IRQHandler(void);
 void TIM3_IRQHandler(void);
 void TIM1_UP_IRQHandler(void);
+
+// functions
+void sendACK(void);
+void sendNACK(uint8_t errno);
 
 
 void TIM2_IRQHandler(void)
@@ -202,12 +222,32 @@ UART_sendString("hi! ");
 			
 // HERE STARTING TO ANALYSE THE DATA			-----------------------------------------------------------------------------------------------------------
 			
-			if (receive_array[INSTRUCTION] == END_SENSORS_STATUS){
-				UART_sendString("END_SENSORS_STATUS");
-				char temp[3] = {END_SENSORS_STATUS,
+			if (receive_array[INSTRUCTION] == GET_END_SENSORS_STATUS){
+				#ifdef DEBUG_MODE
+				UART_sendString("GET_END_SENSORS_STATUS");
+				#endif
+				
+				char temp[3] = {GET_END_SENSORS_STATUS,
 												settings.endSensorZminus<<5 | settings.endSensorZplus<<4 | settings.endSensorYminus<<3 | settings.endSensorYplus<<2 | settings.endSensorXminus<<1 | settings.endSensorXplus<<0,
 												CRC8(temp, 2)};
 				sendData(temp);
+			}
+			
+			if (receive_array[INSTRUCTION] == SET_LOCAL_COORDINATES_TO_ZERO){
+				#ifdef DEBUG_MODE
+				UART_sendString("SET_LOCAL_COORDINATES_TO_ZERO");
+				#endif
+				localCoordinateX = localCoordinateY = localCoordinateZ = 0;
+				sendACK();
+			}
+			
+
+			if (receive_array[INSTRUCTION] == MAKE_BELL){
+				#ifdef DEBUG_MODE
+				UART_sendString("MAKE_BELL");
+				#endif
+
+				sendACK();
 			}
 	/*		
 			
@@ -387,3 +427,16 @@ UART_sendString("hi! ");
 		
 	}
 }
+
+void sendACK(void)
+{
+	sendData(ACK);
+}
+
+void sendNACK(uint8_t errno)
+{
+	NACK[2] = errno;
+	NACK[3] = CRC8(NACK[1], 2);
+	sendData(NACK);
+}
+

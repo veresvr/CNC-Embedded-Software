@@ -54,4 +54,31 @@
 #define REPETITION_VALUE_MAX	255
 
 // INSTRUCTION variants:
-#define END_SENSORS_STATUS			101				// ASCII e
+#define GET_END_SENSORS_STATUS						101				// ASCII e
+#define SET_LOCAL_COORDINATES_TO_ZERO			98				// ASCII b
+#define ACKNOWLEDGE												6					// ASCII control character
+#define NEGATIVE_ACKNOWLEDGE							21				// ASCII control character
+#define MAKE_BELL													7					// ASCII control character
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
